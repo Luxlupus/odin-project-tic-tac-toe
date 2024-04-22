@@ -1,7 +1,6 @@
 
-//creating a IIFE that creates the gameboard object
-
-let gameBoard = (function () {
+//creating a IIFE that creates the gameBoard object
+const gameBoard = (function () {
     return {
         fields: ["1","2","3",
                 "4","5","6",
@@ -9,13 +8,27 @@ let gameBoard = (function () {
     }
 })();
 
-//factory function to create players
+//creating a IIFE that renders the gameBoard object in the DOM
+function gameBoardDOM(gameBoard) {
+    
+    const boardContainer = document.createElement("div");
+    boardContainer.classList.add("game-board");
+    document.body.appendChild(boardContainer);
+    for(let field of gameBoard.fields) {
+        const newField = document.createElement("div");
+        newField.classList.add("field");
+        newField.dataset.index = field;
+        newField.innerText = field;
+        boardContainer.appendChild(newField);
+    }
+}
+gameBoardDOM(gameBoard);
 
+//factory function to create players
 function createPlayer(order, sign) {
     return {order: order.toUpperCase(),
             sign: sign.toUpperCase()};
 }
-
 const playerOne = createPlayer("first", "x");
 const playerTwo = createPlayer("second", "o");
 
@@ -61,17 +74,19 @@ function game(gameBoardObj, playerObject, field) {
             return false;
         };
 
-
-    return {updateFields, checkForHorizontalStrike, checkForVerticalStrike, checkForDiagonalStrike};
-}
+    const checkStrike = () => {
+        if(checkForDiagonalStrike() || checkForHorizontalStrike() || checkForVerticalStrike()){
+            return true;
+        } 
+        return false;
+    };
+    
+    return {updateFields, checkStrike}
+    }
 
 gameBoard.fields;
 playerOne.sign;
 playerTwo.sign;
-
-
-
-
 
 //simulation of the game
 let moves = [
@@ -86,8 +101,11 @@ game(gameBoard, playerTwo, "8"),
 game(gameBoard, playerOne, "9")
 ];
 
-for(let i = 0; i<moves.length; i++){
-    console.log(moves[i].updateFields())
-    console.log(moves[i].checkForHorizontalStrike());
+for (let i = 0; i < moves.length; i++) {
+    moves[i].updateFields();
+    console.log("After move " + (i + 1) + ":", gameBoard.fields);
+    if (moves[i].checkStrike()){
+        console.log("Player " + ((i % 2 === 0) ? "One (X)" : "Two (O)") + " won!");
+        break;
+    }
 }
-
