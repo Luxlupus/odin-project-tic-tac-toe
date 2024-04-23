@@ -9,17 +9,16 @@ const gameBoard = (function () {
 })();
 
 //creating a IIFE that renders the gameBoard object in the DOM
-function gameBoardDOM(gameBoard) {
+function gameBoardDOM(gameBoardObj) {
     
     const boardContainer = document.createElement("div");
     boardContainer.classList.add("game-board");
     document.body.appendChild(boardContainer);
-    for(let field of gameBoard.fields) {
+    for(let field of gameBoardObj.fields) {
         const newField = document.createElement("div");
         newField.dataset.index = field;
         newField.classList.add("field");
-        newField.classList.add("field"+newField.dataset.index);
-        newField.textContent = field;
+        newField.setAttribute("id","field"+newField.dataset.index);
         boardContainer.appendChild(newField);
     }
 }
@@ -45,6 +44,11 @@ function switchPlayer(activePlayer) {
         activePlayer = playerOne;
         return activePlayer;
     }
+}
+
+function drawMarker(playerObject, field) {
+    const pickedField = document.getElementById("field"+field);
+    pickedField.textContent = playerObject.sign;
 }
 
 //The game function takes the game board object, a player object, and a field as parameters
@@ -128,24 +132,47 @@ playerTwo.sign;
 //    }
 //}
 
-function playMove(gameBoardObj, playerObject, field){
+function playMove(gameBoardObj, playerObject, field, count){
     let newMove = game(gameBoardObj, playerObject, field);
+    drawMarker(playerObject, field);
+
     console.log(newMove.updateFields());
-    if (newMove.checkStrike()){
-        console.log(`${playerObject.name} won!`);
+    if (count === 9 && !newMove.checkStrike()) {
+        setTimeout(() => {alert("DRAW");
+        window.parent.location = window.parent.location.href}, 200);
+        
     }
+    
+    if (newMove.checkStrike()) {
+        setTimeout(() => {alert(`${playerObject.name} won!`);
+        window.parent.location = window.parent.location.href}, 200);
+        
+    }
+    
 }
 //playMoveHandler is a function that takes an event object as an argument.
 //It extracts the field index from the clicked element's dataset and then calls playMove
+
+let moveCounter = 1;
+
+function increaseCount(count) {
+    return count + 1;
+}
+
+
 function playMoveHandler(event) {
     const fieldIndex = event.target.dataset.index;
-    playMove(gameBoard, activePlayer, fieldIndex);
-    activePlayer = switchPlayer(activePlayer);
+    playMove(gameBoard, activePlayer, fieldIndex, moveCounter);
+    
+    moveCounter = increaseCount(moveCounter);
+    activePlayer = switchPlayer(activePlayer);   
     event.target.removeEventListener('click', playMoveHandler);
+    
 }
 
 const fields = document.querySelectorAll(".field");
 for (let field of fields) {
     field.addEventListener('click', playMoveHandler);
 }
+
 

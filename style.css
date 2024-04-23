@@ -13,38 +13,38 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 10rem;
     cursor: pointer;
 }
 
-.field1 {
+#field1 {
     border-right: 10px solid black;
     border-bottom: 10px solid black;
 }
-.field2 {
+#field2 {
     border-bottom: 10px solid black;
 }
-.field3 {
+#field3 {
     border-left: 10px solid black;
     border-bottom: 10px solid black;
 }
-.field4 {
+#field4 {
     border-right: 10px solid black;
     border-bottom: 10px solid black;
 }
-.field5 {
+#field5 {
     border-bottom: 10px solid black;
 }
-.field6 {
+#field6 {
     border-bottom: 10px solid black;
     border-left: 10px solid black;
 }
-.field7 {
+#field7 {
     border-right: 10px solid black;
 }
-.field8 {
+#field8 {
     
 }
-.field9 {
+#field9 {
     border-left: 10px solid black;
 }
